@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class AWeapon;
+
 UCLASS(config=Game)
 class ABaseCharacter : public ACharacter
 {
@@ -18,6 +20,7 @@ class ABaseCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+	
 public:
 	ABaseCharacter();
 
@@ -28,6 +31,33 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	TSubclassOf<AWeapon> WeaponBlueprint;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay")
+	AWeapon* Weapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	UAnimMontage* RollAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	UAnimMontage* AttackAnimation;
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void EnableWeaponCollision() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void DisableWeaponCollision() const;
+
+	void Roll();
+
+	void Attack();
 
 protected:
 
@@ -63,9 +93,6 @@ protected:
 	// End of APawn interface
 
 public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	virtual void BeginPlay() override;
 };
 

@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "UE4_RPG/Items/Weapon.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ABaseCharacter
@@ -54,6 +55,7 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+	// UE_LOG(LogTemp, Warning, TEXT("ROLL THEM BONES"));
 	// PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	// PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -74,8 +76,49 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ABaseCharacter::OnResetVR);
+
+	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &ABaseCharacter::Roll);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABaseCharacter::Attack);
 }
 
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!WeaponBlueprint)
+	{
+		return;
+	}
+
+	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative, true), TEXT("WeaponSocket"));
+}
+
+void ABaseCharacter::Roll()
+{
+	GetMesh()->GetAnimInstance()->Montage_Play(RollAnimation, 1.f);
+}
+
+void ABaseCharacter::Attack()
+{
+	GetMesh()->GetAnimInstance()->Montage_Play(AttackAnimation, 1.f);
+}
+
+void ABaseCharacter::EnableWeaponCollision() const
+{
+	if (Weapon)
+	{
+		Weapon->EnableCollision();
+	}
+}
+
+void ABaseCharacter::DisableWeaponCollision() const
+{
+	if (Weapon)
+	{
+		Weapon->DisableCollision();
+	}
+}
 
 void ABaseCharacter::OnResetVR()
 {
