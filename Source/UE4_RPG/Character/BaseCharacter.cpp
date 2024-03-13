@@ -10,9 +10,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "UE4_RPG/Items/Weapon.h"
 
-//////////////////////////////////////////////////////////////////////////
-// ABaseCharacter
-
 ABaseCharacter::ABaseCharacter()
 {
 	// Set size for collision capsule
@@ -53,11 +50,8 @@ ABaseCharacter::ABaseCharacter()
 
 void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	// UE_LOG(LogTemp, Warning, TEXT("ROLL THEM BONES"));
-	// PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	// PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABaseCharacter::MoveRight);
@@ -71,13 +65,14 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ABaseCharacter::LookUpAtRate);
 
 	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ABaseCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ABaseCharacter::TouchStopped);
+	// PlayerInputComponent->BindTouch(IE_Pressed, this, &ABaseCharacter::TouchStarted);
+	// PlayerInputComponent->BindTouch(IE_Released, this, &ABaseCharacter::TouchStopped);
 
 	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ABaseCharacter::OnResetVR);
+	// PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ABaseCharacter::OnResetVR);
 
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &ABaseCharacter::Roll);
+	
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABaseCharacter::Attack);
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABaseCharacter::Run);
@@ -90,13 +85,11 @@ void ABaseCharacter::BeginPlay()
 
 	Walk();
 
-	if (!WeaponBlueprint)
+	if (WeaponBlueprint)
 	{
-		return;
+		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative,true),TEXT("WeaponSocket"));
 	}
-
-	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);
-	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative, true), TEXT("WeaponSocket"));
 }
 
 void ABaseCharacter::Roll()
@@ -137,12 +130,6 @@ void ABaseCharacter::Run()
 
 void ABaseCharacter::OnResetVR()
 {
-	// If UE4_RPG is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in UE4_RPG.Build.cs is not automatically propagated
-	// and a linker error will result.
-	// You will need to either:
-	//		Add "HeadMountedDisplay" to [YourProject].Build.cs PublicDependencyModuleNames in order to build successfully (appropriate if supporting VR).
-	// or:
-	//		Comment or delete the call to ResetOrientationAndPosition below (appropriate if not supporting VR)
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
