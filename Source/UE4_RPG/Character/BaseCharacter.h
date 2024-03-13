@@ -38,6 +38,12 @@ public:
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	float WalkSpeed = 400.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	float RunSpeed = 800.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	TSubclassOf<AWeapon> WeaponBlueprint;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay")
@@ -54,6 +60,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void DisableWeaponCollision() const;
+
+	void Walk();
+
+	void Run();
 
 	void Roll();
 

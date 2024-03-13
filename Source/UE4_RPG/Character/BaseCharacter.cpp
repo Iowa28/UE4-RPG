@@ -79,11 +79,16 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &ABaseCharacter::Roll);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABaseCharacter::Attack);
+
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABaseCharacter::Run);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABaseCharacter::Walk);
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Walk();
 
 	if (!WeaponBlueprint)
 	{
@@ -118,6 +123,16 @@ void ABaseCharacter::DisableWeaponCollision() const
 	{
 		Weapon->DisableCollision();
 	}
+}
+
+void ABaseCharacter::Walk()
+{
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
+void ABaseCharacter::Run()
+{
+	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 }
 
 void ABaseCharacter::OnResetVR()
