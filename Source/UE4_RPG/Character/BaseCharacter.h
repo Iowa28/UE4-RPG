@@ -7,36 +7,28 @@
 #include "BaseCharacter.generated.h"
 
 class AWeapon;
+class USpringArmComponent;
+class UCameraComponent;
+class UStatsComponent;
 
 UCLASS(config=Game)
 class ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
 	
 public:
 	ABaseCharacter();
 
 	virtual void BeginPlay() override;
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
 
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
+
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
@@ -51,11 +43,17 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay")
 	AWeapon* Weapon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	UPROPERTY(EditAnywhere, Category = "Animation Clips")
 	UAnimMontage* RollAnimation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	UPROPERTY(EditAnywhere, Category = "Animation Clips")
 	UAnimMontage* AttackAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
+	UAnimMontage* DamageAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
+	UAnimMontage* DeathAnimation;
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void EnableWeaponCollision() const;
@@ -70,38 +68,29 @@ public:
 	void Roll();
 
 	void Attack();
+	
+	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
-
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
-
-	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
-	/** Called for side to side input */
 	void MoveRight(float Value);
 
-	/** 
-	 * Called via input to turn at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
 	void TurnAtRate(float Rate);
 
-	/**
-	 * Called via input to turn look up/down at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
 	void LookUpAtRate(float Rate);
-
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
-
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 	
-	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// End of APawn interface
+
+private:
+	UAnimInstance* AnimInstance = nullptr;
+	
+	UStatsComponent* StatsComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FollowCamera;
 };
 

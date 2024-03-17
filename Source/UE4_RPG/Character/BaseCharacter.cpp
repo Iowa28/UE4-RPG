@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "BaseCharacter.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
+#include "StatsComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -40,13 +40,7 @@ ABaseCharacter::ABaseCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
-
-//////////////////////////////////////////////////////////////////////////
-// Input
 
 void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -64,13 +58,6 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ABaseCharacter::LookUpAtRate);
 
-	// handle touch devices
-	// PlayerInputComponent->BindTouch(IE_Pressed, this, &ABaseCharacter::TouchStarted);
-	// PlayerInputComponent->BindTouch(IE_Released, this, &ABaseCharacter::TouchStopped);
-
-	// VR headset functionality
-	// PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ABaseCharacter::OnResetVR);
-
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &ABaseCharacter::Roll);
 	
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABaseCharacter::Attack);
@@ -83,6 +70,10 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AnimInstance = GetMesh()->GetAnimInstance();
+
+	StatsComponent = FindComponentByClass<UStatsComponent>();
+
 	Walk();
 
 	if (WeaponBlueprint)
@@ -94,12 +85,41 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::Roll()
 {
-	GetMesh()->GetAnimInstance()->Montage_Play(RollAnimation, 1.f);
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(RollAnimation, 1.f);
+	}
 }
 
 void ABaseCharacter::Attack()
 {
-	GetMesh()->GetAnimInstance()->Montage_Play(AttackAnimation, 1.f);
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(AttackAnimation, 1.f);
+	}
+}
+
+float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser
+)
+{
+	if (!StatsComponent || StatsComponent->IsDead())
+	{
+		return 0;
+	}
+
+	StatsComponent->ApplyDamage(Damage);
+	
+	if (StatsComponent->IsDead())
+	{
+		AnimInstance->Montage_Play(DeathAnimation, 1.f);
+	}
+	else
+	{
+		AnimInstance->Montage_Play(DamageAnimation, 1.f);
+	}
+	
+	return Damage;
 }
 
 void ABaseCharacter::EnableWeaponCollision() const
@@ -126,21 +146,6 @@ void ABaseCharacter::Walk()
 void ABaseCharacter::Run()
 {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
-}
-
-void ABaseCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void ABaseCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	Jump();
-}
-
-void ABaseCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	StopJumping();
 }
 
 void ABaseCharacter::TurnAtRate(float Rate)

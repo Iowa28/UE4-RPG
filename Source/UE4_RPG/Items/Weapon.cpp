@@ -2,6 +2,7 @@
 
 
 #include "Weapon.h"
+#include "Kismet/GameplayStatics.h"
 
 AWeapon::AWeapon()
 {
@@ -20,7 +21,13 @@ void AWeapon::OnHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPr
 {
 	if (OtherActor && OtherActor->ActorHasTag(FName("Character")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OMG I hit %s"), *OtherActor->GetName());
+		UGameplayStatics::ApplyDamage(
+			OtherActor,
+			Damage,
+			GetInstigatorController(),
+			this,
+			UDamageType::StaticClass()
+		);
 	}
 }
 

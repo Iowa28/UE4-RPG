@@ -15,10 +15,13 @@ class UE4_RPG_API AWeapon : public AActor
 public:	
 	AWeapon();
 
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float Damage = 25.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	UStaticMeshComponent* WeaponMesh = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	UBoxComponent* BoxCollision = nullptr;
 
 	UFUNCTION()
