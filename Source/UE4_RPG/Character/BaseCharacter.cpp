@@ -99,20 +99,23 @@ void ABaseCharacter::Attack()
 	}
 }
 
-float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser
-)
+bool ABaseCharacter::IsCharacterDead() const
 {
-	if (!StatsComponent || StatsComponent->IsDead())
+	return !StatsComponent || StatsComponent->IsDead();
+}
+
+float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (IsCharacterDead())
 	{
 		return 0;
 	}
 
 	StatsComponent->ApplyDamage(Damage);
 	
-	if (StatsComponent->IsDead())
+	if (IsCharacterDead())
 	{
-		AnimInstance->Montage_Play(DeathAnimation, 1.f);
+		DetachFromControllerPendingDestroy();
 	}
 	else
 	{

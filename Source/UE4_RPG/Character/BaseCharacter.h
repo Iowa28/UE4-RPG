@@ -52,14 +52,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
 	UAnimMontage* DamageAnimation;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
-	UAnimMontage* DeathAnimation;
-
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void EnableWeaponCollision() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void DisableWeaponCollision() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	bool IsCharacterDead() const;
 
 	void Walk();
 
