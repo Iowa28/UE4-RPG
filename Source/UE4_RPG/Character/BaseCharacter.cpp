@@ -85,6 +85,11 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::Roll()
 {
+	if (bDisableCharacterMovement)
+	{
+		return;
+	}
+	
 	if (AnimInstance)
 	{
 		AnimInstance->Montage_Play(RollAnimation, 1.f);
@@ -93,6 +98,11 @@ void ABaseCharacter::Roll()
 
 void ABaseCharacter::Attack()
 {
+	if (bDisableCharacterMovement)
+	{
+		return;
+	}
+	
 	if (AnimInstance)
 	{
 		AnimInstance->Montage_Play(AttackAnimation, 1.f);
@@ -101,12 +111,12 @@ void ABaseCharacter::Attack()
 
 bool ABaseCharacter::IsCharacterDead() const
 {
-	return !StatsComponent || StatsComponent->IsDead();
+	return StatsComponent && StatsComponent->IsDead();
 }
 
 float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (IsCharacterDead())
+	if (!StatsComponent || IsCharacterDead())
 	{
 		return 0;
 	}
@@ -165,6 +175,11 @@ void ABaseCharacter::LookUpAtRate(float Rate)
 
 void ABaseCharacter::MoveForward(float Value)
 {
+	if (bDisableCharacterMovement)
+	{
+		return;
+	}
+	
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is forward
@@ -179,6 +194,11 @@ void ABaseCharacter::MoveForward(float Value)
 
 void ABaseCharacter::MoveRight(float Value)
 {
+	if (bDisableCharacterMovement)
+	{
+		return;
+	}
+	
 	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
 		// find out which way is right

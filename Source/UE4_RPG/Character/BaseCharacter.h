@@ -31,6 +31,9 @@ public:
 
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bDisableCharacterMovement;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	float WalkSpeed = 400.f;
 
