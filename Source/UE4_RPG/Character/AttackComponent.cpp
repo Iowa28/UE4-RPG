@@ -56,7 +56,6 @@ void UAttackComponent::ResetAttacking()
 
 void UAttackComponent::ResetCombo()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ResetCombo"));
 	AttackIndex = 0;
 }
 

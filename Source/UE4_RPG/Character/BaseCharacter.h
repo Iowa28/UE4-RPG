@@ -94,15 +94,17 @@ protected:
 
 private:
 	UAnimInstance* AnimInstance = nullptr;
-	
-	UStatsComponent* StatsComponent = nullptr;
 
 	UAttackComponent* AttackComponent = nullptr;
+	
+	UStatsComponent* StatsComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	void LoadComponents();
 };
 

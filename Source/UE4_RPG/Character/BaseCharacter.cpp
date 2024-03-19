@@ -71,19 +71,7 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance)
-	{
-		AnimInstance->OnMontageEnded.AddDynamic(this, &ABaseCharacter::OnMontageEnded);
-	}
-
-	StatsComponent = FindComponentByClass<UStatsComponent>();
-	
-	AttackComponent = FindComponentByClass<UAttackComponent>();
-	if (AttackComponent)
-	{
-		AttackComponent->SetAnimInstance(AnimInstance);
-	}
+	LoadComponents();
 
 	Walk();
 
@@ -91,6 +79,35 @@ void ABaseCharacter::BeginPlay()
 	{
 		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);
 		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative,true),TEXT("WeaponSocket"));
+	}
+}
+
+void ABaseCharacter::LoadComponents()
+{
+	AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->OnMontageEnded.AddDynamic(this, &ABaseCharacter::OnMontageEnded);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AnimInstance is missing!"));
+	}
+	
+	AttackComponent = FindComponentByClass<UAttackComponent>();
+	if (AttackComponent)
+	{
+		AttackComponent->SetAnimInstance(AnimInstance);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttackComponent is missing!"));
+	}
+
+	StatsComponent = FindComponentByClass<UStatsComponent>();
+	if (!StatsComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("StatsComponent is missing!"));
 	}
 }
 
@@ -113,7 +130,7 @@ void ABaseCharacter::Roll()
 
 void ABaseCharacter::Attack()
 {
-	if (bDisableCharacterMovement || !AttackComponent || !AnimInstance)
+	if (bDisableCharacterMovement || !AnimInstance || !AttackComponent)
 	{
 		return;
 	}
