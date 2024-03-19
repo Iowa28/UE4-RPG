@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "BaseCharacter.h"
+#include "AttackComponent.h"
 #include "StatsComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -77,6 +78,12 @@ void ABaseCharacter::BeginPlay()
 	}
 
 	StatsComponent = FindComponentByClass<UStatsComponent>();
+	
+	AttackComponent = FindComponentByClass<UAttackComponent>();
+	if (AttackComponent)
+	{
+		AttackComponent->SetAnimInstance(AnimInstance);
+	}
 
 	Walk();
 
@@ -89,30 +96,29 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::Roll()
 {
-	if (bDisableCharacterMovement)
+	if (bDisableCharacterMovement || !AnimInstance)
 	{
 		return;
 	}
 	
-	if (AnimInstance)
+	bDisableCharacterMovement = true;
+	AnimInstance->Montage_Play(RollAnimation, 1.f);
+	DisableWeaponCollision();
+
+	if (AttackComponent)
 	{
-		bDisableCharacterMovement = true;
-		AnimInstance->Montage_Play(RollAnimation, 1.f);
+		AttackComponent->ResetCombo();
 	}
 }
 
 void ABaseCharacter::Attack()
 {
-	if (bDisableCharacterMovement)
+	if (bDisableCharacterMovement || !AttackComponent || !AnimInstance)
 	{
 		return;
 	}
-	
-	if (AnimInstance)
-	{
-		bDisableCharacterMovement = true;
-		AnimInstance->Montage_Play(AttackAnimation, 1.f);
-	}
+
+	AttackComponent->PerformCombo();
 }
 
 bool ABaseCharacter::IsCharacterDead() const
@@ -123,6 +129,11 @@ bool ABaseCharacter::IsCharacterDead() const
 void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 {
 	bDisableCharacterMovement = false;
+
+	if (AttackComponent && !Interrupted)
+	{
+		AttackComponent->ResetAttacking();
+	}
 }
 
 float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -160,6 +171,22 @@ void ABaseCharacter::DisableWeaponCollision() const
 	{
 		Weapon->DisableCollision();
 	}
+}
+
+void ABaseCharacter::EnableCombo()
+{
+	if (AttackComponent)
+	{
+		AttackComponent->EnableCombo();
+	}
+}
+
+void ABaseCharacter::DisableCombo()
+{
+	if (AttackComponent)
+	{
+		AttackComponent->DisableCombo();
+	}	
 }
 
 void ABaseCharacter::Walk()

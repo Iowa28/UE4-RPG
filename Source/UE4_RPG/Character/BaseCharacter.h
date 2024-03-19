@@ -10,6 +10,7 @@ class AWeapon;
 class USpringArmComponent;
 class UCameraComponent;
 class UStatsComponent;
+class UAttackComponent;
 
 UCLASS(config=Game)
 class ABaseCharacter : public ACharacter
@@ -49,9 +50,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Animation Clips")
 	UAnimMontage* RollAnimation;
 
-	UPROPERTY(EditAnywhere, Category = "Animation Clips")
-	UAnimMontage* AttackAnimation;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
 	UAnimMontage* DamageAnimation;
 
@@ -60,6 +58,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void DisableWeaponCollision() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void EnableCombo();
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void DisableCombo();
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	bool IsCharacterDead() const;
@@ -92,6 +96,8 @@ private:
 	UAnimInstance* AnimInstance = nullptr;
 	
 	UStatsComponent* StatsComponent = nullptr;
+
+	UAttackComponent* AttackComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
