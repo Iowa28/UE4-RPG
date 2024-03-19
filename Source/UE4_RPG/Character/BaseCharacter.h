@@ -64,6 +64,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	bool IsCharacterDead() const;
 
+	UFUNCTION()
+	void OnMontageEnded(UAnimMontage* Montage, bool Interrupted);
+
 	void Walk();
 
 	void Run();

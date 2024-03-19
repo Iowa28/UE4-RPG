@@ -45,7 +45,7 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
-	// UE_LOG(LogTemp, Warning, TEXT("ROLL THEM BONES"));
+	// UE_LOG(LogTemp, Warning, TEXT("HEY"));
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABaseCharacter::MoveRight);
@@ -71,6 +71,10 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->OnMontageEnded.AddDynamic(this, &ABaseCharacter::OnMontageEnded);
+	}
 
 	StatsComponent = FindComponentByClass<UStatsComponent>();
 
@@ -92,6 +96,7 @@ void ABaseCharacter::Roll()
 	
 	if (AnimInstance)
 	{
+		bDisableCharacterMovement = true;
 		AnimInstance->Montage_Play(RollAnimation, 1.f);
 	}
 }
@@ -105,6 +110,7 @@ void ABaseCharacter::Attack()
 	
 	if (AnimInstance)
 	{
+		bDisableCharacterMovement = true;
 		AnimInstance->Montage_Play(AttackAnimation, 1.f);
 	}
 }
@@ -112,6 +118,11 @@ void ABaseCharacter::Attack()
 bool ABaseCharacter::IsCharacterDead() const
 {
 	return StatsComponent && StatsComponent->IsDead();
+}
+
+void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
+{
+	bDisableCharacterMovement = false;
 }
 
 float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
