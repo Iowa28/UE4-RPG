@@ -36,6 +36,8 @@ public:
 
 	void SetAnimInstance(UAnimInstance* Instance);
 
+	bool IsAttacking();
+
 private:
 	int32 AttackIndex = 0;
 

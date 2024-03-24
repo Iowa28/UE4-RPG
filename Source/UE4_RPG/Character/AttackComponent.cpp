@@ -58,3 +58,8 @@ void UAttackComponent::SetAnimInstance(UAnimInstance* Instance)
 {
 	AnimInstance = Instance;
 }
+
+bool UAttackComponent::IsAttacking()
+{
+	return bAttacking;
+}

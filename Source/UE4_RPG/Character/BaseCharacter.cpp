@@ -82,6 +82,16 @@ void ABaseCharacter::BeginPlay()
 	}
 }
 
+void ABaseCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (!bDisableCharacterMovement && AttackComponent && !AttackComponent->IsAttacking() && StatsComponent)
+	{
+		StatsComponent->RegenerateStamina();
+	}
+}
+
 void ABaseCharacter::LoadComponents()
 {
 	AnimInstance = GetMesh()->GetAnimInstance();
@@ -113,7 +123,7 @@ void ABaseCharacter::LoadComponents()
 
 void ABaseCharacter::Roll()
 {
-	if (bDisableCharacterMovement || !AnimInstance)
+	if (bDisableCharacterMovement || !AnimInstance || !StatsComponent)
 	{
 		return;
 	}
@@ -130,12 +140,16 @@ void ABaseCharacter::Roll()
 
 void ABaseCharacter::Attack()
 {
-	if (bDisableCharacterMovement || !AnimInstance || !AttackComponent)
+	if (bDisableCharacterMovement || !AnimInstance || !AttackComponent || !StatsComponent || !Weapon)
 	{
 		return;
 	}
 
-	AttackComponent->PerformCombo();
+	if (StatsComponent->HasStamina())
+	{
+		AttackComponent->PerformCombo();
+		StatsComponent->DecreaseStamina(Weapon->RequiredStaminaAmount);
+	}
 }
 
 bool ABaseCharacter::IsCharacterDead() const

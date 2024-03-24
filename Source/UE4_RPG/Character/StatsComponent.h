@@ -14,16 +14,34 @@ class UE4_RPG_API UStatsComponent : public UActorComponent
 public:	
 	UStatsComponent();
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float MaxHealth = 100;
+	float MaxHealth = 100.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float MaxStamina = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float StaminaRegenerationDelay = 1.f;
 
 	void ApplyDamage(const float DamageAmount);
 
 	bool IsDead();
+
+	void RegenerateStamina();
+
+	void DecreaseStamina(const float StaminaAmount);
+
+	bool HasStamina();
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	float Health;
+
+	float Stamina;
+
+	float StaminaRegenerationTimer;
 };
