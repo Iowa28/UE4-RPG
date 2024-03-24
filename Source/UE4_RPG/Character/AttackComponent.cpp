@@ -8,11 +8,6 @@ UAttackComponent::UAttackComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UAttackComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void UAttackComponent::PerformCombo()
 {
 	if (bAttacking && !bCanDoCombo)

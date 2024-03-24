@@ -93,10 +93,13 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	UPROPERTY()
 	UAnimInstance* AnimInstance = nullptr;
 
+	UPROPERTY()
 	UAttackComponent* AttackComponent = nullptr;
-	
+
+	UPROPERTY()
 	UStatsComponent* StatsComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

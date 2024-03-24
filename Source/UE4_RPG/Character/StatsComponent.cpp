@@ -5,7 +5,7 @@
 
 UStatsComponent::UStatsComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UStatsComponent::BeginPlay()
@@ -24,4 +24,3 @@ bool UStatsComponent::IsDead()
 {
 	return Health <= 0;
 }
-

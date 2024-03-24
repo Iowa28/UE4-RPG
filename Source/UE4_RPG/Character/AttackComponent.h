@@ -36,15 +36,13 @@ public:
 
 	void SetAnimInstance(UAnimInstance* Instance);
 
-protected:
-	virtual void BeginPlay() override;
-
 private:
 	int32 AttackIndex = 0;
 
 	bool bAttacking;
 
 	bool bCanDoCombo;
-	
+
+	UPROPERTY()
 	UAnimInstance* AnimInstance = nullptr;
 };
