@@ -157,6 +157,16 @@ bool ABaseCharacter::IsCharacterDead() const
 	return StatsComponent && StatsComponent->IsDead();
 }
 
+float ABaseCharacter::GetHealthPercent() const
+{
+	return StatsComponent ? StatsComponent->GetHealthPercent() : 0;
+}
+
+float ABaseCharacter::GetStaminaPercent() const
+{
+	return StatsComponent ? StatsComponent->GetStaminaPercent() : 0;
+}
+
 void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 {
 	bDisableCharacterMovement = false;

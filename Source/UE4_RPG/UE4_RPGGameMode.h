@@ -13,6 +13,11 @@ class AUE4_RPGGameMode : public AGameModeBase
 
 public:
 	AUE4_RPGGameMode();
+
+	virtual void BeginPlay() override;
+
+private:
+	TSubclassOf<UUserWidget> WidgetClass;
 };
 
 

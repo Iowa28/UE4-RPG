@@ -70,6 +70,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	bool IsCharacterDead() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	float GetHealthPercent() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	float GetStaminaPercent() const;
+
 	UFUNCTION()
 	void OnMontageEnded(UAnimMontage* Montage, bool Interrupted);
 

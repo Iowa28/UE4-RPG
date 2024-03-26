@@ -35,6 +35,10 @@ public:
 
 	bool HasStamina();
 
+	float GetHealthPercent();
+	
+	float GetStaminaPercent();
+
 protected:
 	virtual void BeginPlay() override;
 

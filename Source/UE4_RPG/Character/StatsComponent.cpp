@@ -12,7 +12,7 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina);
+	// UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina);
 }
 
 void UStatsComponent::BeginPlay()
@@ -56,4 +56,14 @@ void UStatsComponent::DecreaseStamina(const float StaminaAmount)
 bool UStatsComponent::HasStamina()
 {
 	return Stamina > 0;
+}
+
+float UStatsComponent::GetHealthPercent()
+{
+	return Health / MaxHealth;
+}
+
+float UStatsComponent::GetStaminaPercent()
+{
+	return Stamina / MaxStamina;
 }
