@@ -134,6 +134,37 @@ void ABaseCharacter::LoadComponents()
 	}
 }
 
+void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
+{
+	bInteracting = false;
+
+	if (!Interrupted)
+	{
+		bAttacking = false;
+	}
+}
+
+float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!StatsComponent || IsCharacterDead())
+	{
+		return 0;
+	}
+
+	StatsComponent->ApplyDamage(Damage);
+	
+	if (IsCharacterDead())
+	{
+		DetachFromControllerPendingDestroy();
+	}
+	else
+	{
+		AnimInstance->Montage_Play(DamageAnimation, 1.f);
+	}
+	
+	return Damage;
+}
+
 void ABaseCharacter::Roll()
 {
 	if (bInteracting || bAttacking || !AnimInstance || !StatsComponent || !StatsComponent->HasStamina())
@@ -168,6 +199,7 @@ void ABaseCharacter::Attack()
 	}
 }
 
+#pragma region Stats
 bool ABaseCharacter::IsCharacterDead() const
 {
 	return StatsComponent && StatsComponent->IsDead();
@@ -182,38 +214,9 @@ float ABaseCharacter::GetStaminaPercent() const
 {
 	return StatsComponent ? StatsComponent->GetStaminaPercent() : 0;
 }
+#pragma endregion Stats
 
-void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
-{
-	bInteracting = false;
-
-	if (!Interrupted)
-	{
-		bAttacking = false;
-	}
-}
-
-float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (!StatsComponent || IsCharacterDead())
-	{
-		return 0;
-	}
-
-	StatsComponent->ApplyDamage(Damage);
-	
-	if (IsCharacterDead())
-	{
-		DetachFromControllerPendingDestroy();
-	}
-	else
-	{
-		AnimInstance->Montage_Play(DamageAnimation, 1.f);
-	}
-	
-	return Damage;
-}
-
+#pragma region Collision
 void ABaseCharacter::EnableWeaponCollision() const
 {
 	if (Weapon)
@@ -229,7 +232,9 @@ void ABaseCharacter::DisableWeaponCollision() const
 		Weapon->DisableCollision();
 	}
 }
+#pragma endregion Collision
 
+#pragma region Combo
 void ABaseCharacter::EnableCombo()
 {
 	bCanDoCombo = true;
@@ -243,7 +248,9 @@ void ABaseCharacter::DisableCombo()
 		AttackComponent->ResetComboIndex();
 	}	
 }
+#pragma endregion Combo
 
+#pragma region Movement
 void ABaseCharacter::Walk()
 {
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
@@ -256,12 +263,13 @@ void ABaseCharacter::Run()
 
 bool ABaseCharacter::IsWalking()
 {
-	return FMath::IsNearlyEqual(GetCharacterMovement()->GetMaxSpeed(), WalkSpeed); 
+	float Speed = GetVelocity().Size();
+	return Speed > 0 && Speed < RunSpeed;
 }
 
 bool ABaseCharacter::IsRunning()
 {
-	return FMath::IsNearlyEqual(GetCharacterMovement()->GetMaxSpeed(), RunSpeed); 
+	return FMath::IsNearlyEqual(GetVelocity().Size(), RunSpeed, 2.f);
 }
 
 void ABaseCharacter::TurnAtRate(float Rate)
@@ -314,3 +322,4 @@ void ABaseCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+#pragma endregion Movement

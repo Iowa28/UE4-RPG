@@ -24,7 +24,7 @@ public:
 	float StaminaRegenerationDelay = .5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float StaminaRegenerationAmount = 25.f;
+	float StaminaRegenerationAmount = 30.f;
 
 	void ApplyDamage(const float DamageAmount);
 

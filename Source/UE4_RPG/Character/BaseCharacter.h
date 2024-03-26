@@ -41,10 +41,10 @@ public:
 	float RunSpeed = 800.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-	float RunStaminaCost = .5f;
+	float RunStaminaCost = .3f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-	float RollStaminaCost = 30.f;
+	float RollStaminaCost = 20.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	TSubclassOf<AWeapon> WeaponBlueprint;
