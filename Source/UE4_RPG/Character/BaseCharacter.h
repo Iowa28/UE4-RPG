@@ -34,9 +34,6 @@ public:
 
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	bool bDisableCharacterMovement;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	float WalkSpeed = 400.f;
 
@@ -48,6 +45,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay")
 	AWeapon* Weapon;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	bool bInteracting;
 
 	UPROPERTY(EditAnywhere, Category = "Animation Clips")
 	UAnimMontage* RollAnimation;
@@ -115,6 +115,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	bool bAttacking;
+
+	bool bCanDoCombo;
 
 	void LoadComponents();
 };

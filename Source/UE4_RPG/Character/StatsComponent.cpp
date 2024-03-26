@@ -5,14 +5,7 @@
 
 UStatsComponent::UStatsComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
-}
-
-void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
-	// UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina);
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UStatsComponent::BeginPlay()
@@ -43,7 +36,7 @@ void UStatsComponent::RegenerateStamina()
 	}
 	else if (Stamina < MaxStamina)
 	{
-		Stamina = FMath::Min(Stamina + DeltaSeconds, MaxStamina);
+		Stamina = FMath::Min(Stamina + DeltaSeconds * StaminaRegenerationAmount, MaxStamina);
 	}
 }
 

@@ -14,8 +14,6 @@ class UE4_RPG_API UStatsComponent : public UActorComponent
 public:	
 	UStatsComponent();
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float MaxHealth = 100.f;
 	
@@ -24,6 +22,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float StaminaRegenerationDelay = 1.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float StaminaRegenerationAmount = 20.f;
 
 	void ApplyDamage(const float DamageAmount);
 

@@ -86,7 +86,7 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (!bDisableCharacterMovement && AttackComponent && !AttackComponent->IsAttacking() && StatsComponent)
+	if (!bInteracting && !bAttacking && StatsComponent)
 	{
 		StatsComponent->RegenerateStamina();
 	}
@@ -123,24 +123,24 @@ void ABaseCharacter::LoadComponents()
 
 void ABaseCharacter::Roll()
 {
-	if (bDisableCharacterMovement || !AnimInstance || !StatsComponent)
+	if (bInteracting || !AnimInstance || !StatsComponent)
 	{
 		return;
 	}
 	
-	bDisableCharacterMovement = true;
+	bInteracting = true;
 	AnimInstance->Montage_Play(RollAnimation, 1.f);
 	DisableWeaponCollision();
 
 	if (AttackComponent)
 	{
-		AttackComponent->ResetCombo();
+		AttackComponent->ResetComboIndex();
 	}
 }
 
 void ABaseCharacter::Attack()
 {
-	if (bDisableCharacterMovement || !AnimInstance || !AttackComponent || !StatsComponent || !Weapon)
+	if (bInteracting || (bAttacking && !bCanDoCombo) || !AnimInstance || !AttackComponent || !StatsComponent || !Weapon)
 	{
 		return;
 	}
@@ -149,6 +149,8 @@ void ABaseCharacter::Attack()
 	{
 		AttackComponent->PerformCombo();
 		StatsComponent->DecreaseStamina(Weapon->RequiredStaminaAmount);
+		bAttacking = true;
+		bCanDoCombo = false;
 	}
 }
 
@@ -169,11 +171,11 @@ float ABaseCharacter::GetStaminaPercent() const
 
 void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 {
-	bDisableCharacterMovement = false;
+	bInteracting = false;
 
-	if (AttackComponent && !Interrupted)
+	if (!Interrupted)
 	{
-		AttackComponent->ResetAttacking();
+		bAttacking = false;
 	}
 }
 
@@ -216,17 +218,15 @@ void ABaseCharacter::DisableWeaponCollision() const
 
 void ABaseCharacter::EnableCombo()
 {
-	if (AttackComponent)
-	{
-		AttackComponent->EnableCombo();
-	}
+	bCanDoCombo = true;
 }
 
 void ABaseCharacter::DisableCombo()
 {
+	bCanDoCombo = false;
 	if (AttackComponent)
 	{
-		AttackComponent->DisableCombo();
+		AttackComponent->ResetComboIndex();
 	}	
 }
 
@@ -254,7 +254,7 @@ void ABaseCharacter::LookUpAtRate(float Rate)
 
 void ABaseCharacter::MoveForward(float Value)
 {
-	if (bDisableCharacterMovement)
+	if (bInteracting)
 	{
 		return;
 	}
@@ -273,7 +273,7 @@ void ABaseCharacter::MoveForward(float Value)
 
 void ABaseCharacter::MoveRight(float Value)
 {
-	if (bDisableCharacterMovement)
+	if (bInteracting)
 	{
 		return;
 	}

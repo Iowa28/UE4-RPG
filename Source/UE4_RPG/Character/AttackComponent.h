@@ -26,24 +26,12 @@ public:
 
 	void PerformCombo();
 
-	void EnableCombo();
-
-	void DisableCombo();
-
-	void ResetAttacking();
-
-	void ResetCombo();
+	void ResetComboIndex();
 
 	void SetAnimInstance(UAnimInstance* Instance);
 
-	bool IsAttacking();
-
 private:
-	int32 AttackIndex = 0;
-
-	bool bAttacking;
-
-	bool bCanDoCombo;
+	int32 ComboIndex = 0;
 
 	UPROPERTY()
 	UAnimInstance* AnimInstance = nullptr;

@@ -10,56 +10,28 @@ UAttackComponent::UAttackComponent()
 
 void UAttackComponent::PerformCombo()
 {
-	if (bAttacking && !bCanDoCombo)
-	{
-		return;
-	}
-	
-	if (AttackIndex == 0)
+	if (ComboIndex == 0)
 	{
 		AnimInstance->Montage_Play(ComboAnimation1, 1.f);
 	}
-	else if (AttackIndex == 1)
+	else if (ComboIndex == 1)
 	{
 		AnimInstance->Montage_Play(ComboAnimation2, 1.f);
 	}
-	else if (AttackIndex == 2)
+	else if (ComboIndex == 2)
 	{
 		AnimInstance->Montage_Play(ComboAnimation3, 1.f);
 	}
 
-	AttackIndex = (AttackIndex + 1) % 3;
-	bAttacking = true;
-	bCanDoCombo = false;
+	ComboIndex = (ComboIndex + 1) % 3;
 }
 
-void UAttackComponent::EnableCombo()
+void UAttackComponent::ResetComboIndex()
 {
-	bCanDoCombo = true;
-}
-
-void UAttackComponent::DisableCombo()
-{
-	bCanDoCombo = false;
-	ResetCombo();
-}
-
-void UAttackComponent::ResetAttacking()
-{
-	bAttacking = false;
-}
-
-void UAttackComponent::ResetCombo()
-{
-	AttackIndex = 0;
+	ComboIndex = 0;
 }
 
 void UAttackComponent::SetAnimInstance(UAnimInstance* Instance)
 {
 	AnimInstance = Instance;
-}
-
-bool UAttackComponent::IsAttacking()
-{
-	return bAttacking;
 }
