@@ -48,7 +48,7 @@ void UStatsComponent::DecreaseStamina(const float StaminaAmount)
 
 bool UStatsComponent::HasStamina()
 {
-	return Stamina > 0;
+	return Stamina > .5f;
 }
 
 float UStatsComponent::GetHealthPercent()

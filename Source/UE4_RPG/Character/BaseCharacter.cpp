@@ -86,7 +86,20 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (!bInteracting && !bAttacking && StatsComponent)
+	if (!StatsComponent)
+	{
+		return;
+	}
+
+	if (IsRunning())
+	{
+		StatsComponent->DecreaseStamina(RunStaminaCost);
+		if (!StatsComponent->HasStamina())
+		{
+			Walk();
+		}
+	}
+	else if (!bInteracting && !bAttacking)
 	{
 		StatsComponent->RegenerateStamina();
 	}
@@ -123,13 +136,14 @@ void ABaseCharacter::LoadComponents()
 
 void ABaseCharacter::Roll()
 {
-	if (bInteracting || !AnimInstance || !StatsComponent)
+	if (bInteracting || bAttacking || !AnimInstance || !StatsComponent || !StatsComponent->HasStamina())
 	{
 		return;
 	}
 	
 	bInteracting = true;
 	AnimInstance->Montage_Play(RollAnimation, 1.f);
+	StatsComponent->DecreaseStamina(RollStaminaCost);
 	DisableWeaponCollision();
 
 	if (AttackComponent)
@@ -148,7 +162,7 @@ void ABaseCharacter::Attack()
 	if (StatsComponent->HasStamina())
 	{
 		AttackComponent->PerformCombo();
-		StatsComponent->DecreaseStamina(Weapon->RequiredStaminaAmount);
+		StatsComponent->DecreaseStamina(Weapon->StaminaCost);
 		bAttacking = true;
 		bCanDoCombo = false;
 	}
@@ -238,6 +252,16 @@ void ABaseCharacter::Walk()
 void ABaseCharacter::Run()
 {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+}
+
+bool ABaseCharacter::IsWalking()
+{
+	return FMath::IsNearlyEqual(GetCharacterMovement()->GetMaxSpeed(), WalkSpeed); 
+}
+
+bool ABaseCharacter::IsRunning()
+{
+	return FMath::IsNearlyEqual(GetCharacterMovement()->GetMaxSpeed(), RunSpeed); 
 }
 
 void ABaseCharacter::TurnAtRate(float Rate)

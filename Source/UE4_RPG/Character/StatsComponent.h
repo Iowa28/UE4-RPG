@@ -21,10 +21,10 @@ public:
 	float MaxStamina = 100.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float StaminaRegenerationDelay = 1.f;
+	float StaminaRegenerationDelay = .5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float StaminaRegenerationAmount = 20.f;
+	float StaminaRegenerationAmount = 25.f;
 
 	void ApplyDamage(const float DamageAmount);
 

@@ -41,6 +41,12 @@ public:
 	float RunSpeed = 800.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	float RunStaminaCost = .5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	float RollStaminaCost = 30.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	TSubclassOf<AWeapon> WeaponBlueprint;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay")
@@ -121,5 +127,9 @@ private:
 	bool bCanDoCombo;
 
 	void LoadComponents();
+
+	bool IsWalking();
+	
+	bool IsRunning();
 };
 

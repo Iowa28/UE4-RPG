@@ -19,7 +19,7 @@ public:
 	float Damage = 25.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float RequiredStaminaAmount = 40.f;
+	float StaminaCost = 40.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	UStaticMeshComponent* WeaponMesh = nullptr;
