@@ -132,6 +132,7 @@ void ABaseCharacter::LoadComponents()
 
 void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 {
+	GetCharacterMovement()->Activate();
 	bInteracting = false;
 
 	if (!Interrupted)
@@ -147,6 +148,7 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 		return 0;
 	}
 
+	GetCharacterMovement()->Deactivate();
 	StatsComponent->ApplyDamage(Damage);
 	
 	if (IsCharacterDead())

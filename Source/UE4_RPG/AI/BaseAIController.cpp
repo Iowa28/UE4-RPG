@@ -7,7 +7,6 @@ void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("AIController BeginPlay"));
 	if (BlackboardData)
 	{
 		UseBlackboard(BlackboardData, BlackboardComponent);
