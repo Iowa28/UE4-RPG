@@ -122,10 +122,6 @@ void ABaseCharacter::LoadComponents()
 	{
 		AttackComponent->SetAnimInstance(AnimInstance);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AttackComponent is missing!"));
-	}
 
 	StatsComponent = FindComponentByClass<UStatsComponent>();
 	if (!StatsComponent)
