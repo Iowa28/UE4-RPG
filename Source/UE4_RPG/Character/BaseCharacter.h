@@ -41,18 +41,15 @@ public:
 	float RunSpeed = 800.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-	float RunStaminaCost = .3f;
+	float RunStaminaCost = .2f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-	float RollStaminaCost = 20.f;
+	float RollStaminaCost = 15.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	TSubclassOf<AWeapon> WeaponBlueprint;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay")
-	AWeapon* Weapon;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	UPROPERTY(BlueprintReadWrite, Category = "Gameplay")
 	bool bInteracting;
 
 	UPROPERTY(EditAnywhere, Category = "Animation Clips")
@@ -121,6 +118,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY()
+	AWeapon* Weapon;
 
 	bool bAttacking;
 
