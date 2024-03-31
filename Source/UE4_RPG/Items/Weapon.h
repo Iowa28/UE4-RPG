@@ -22,6 +22,9 @@ public:
 	float StaminaCost = 15.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	FName TriggerTag = FName("Character");
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	UStaticMeshComponent* WeaponMesh = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
