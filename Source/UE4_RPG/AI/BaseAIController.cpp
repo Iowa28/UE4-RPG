@@ -2,10 +2,10 @@
 
 
 #include "BaseAIController.h"
-
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionTypes.h"
+#include "UE4_RPG/ActorUtils.h"
 
 ABaseAIController::ABaseAIController()
 {
@@ -31,7 +31,7 @@ void ABaseAIController::BeginPlay()
 
 void ABaseAIController::PerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Actor && Actor->ActorHasTag("Player"))
+	if (BlackboardComponent && UActorUtils::IsPlayer(Actor))
 	{
 		BlackboardComponent->SetValueAsObject(PlayerKey, Actor);
 	}
