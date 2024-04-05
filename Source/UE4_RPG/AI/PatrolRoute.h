@@ -15,7 +15,7 @@ class UE4_RPG_API UPatrolRoute : public UActorComponent
 public:	
 	UPatrolRoute();
 		
-	TArray<AActor*> GetPatrolPoints() const;
+	TArray<AActor*>& GetPatrolPoints();
 
 private:
 	UPROPERTY(EditInstanceOnly, Category = "Patrol Route")

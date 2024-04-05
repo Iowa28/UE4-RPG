@@ -8,10 +8,7 @@ UPatrolRoute::UPatrolRoute()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-TArray<AActor*> UPatrolRoute::GetPatrolPoints() const
+TArray<AActor*>& UPatrolRoute::GetPatrolPoints()
 {
 	return PatrolPoints;
 }
-
-
-

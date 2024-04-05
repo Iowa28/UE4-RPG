@@ -5,10 +5,5 @@
 
 bool UActorUtils::IsPlayer(const AActor* Actor)
 {
-	return Actor && Actor->ActorHasTag("Player");
-}
-
-bool UActorUtils::IsCharacter(const AActor* Actor)
-{
-	return Actor && Actor->ActorHasTag("Character");
+	return Actor && Cast<APawn>(Actor)->IsPlayerControlled();
 }

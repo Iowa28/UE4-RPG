@@ -13,6 +13,4 @@ class UE4_RPG_API UActorUtils : public UBlueprintFunctionLibrary
 
 public:
 	static bool IsPlayer(const AActor* Actor);
-	
-	static bool IsCharacter(const AActor* Actor);
 };

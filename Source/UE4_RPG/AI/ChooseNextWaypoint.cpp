@@ -15,7 +15,7 @@ EBTNodeResult::Type UChooseNextWaypoint::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 	
-	TArray<AActor*> PatrolPoints = PatrolRoute->GetPatrolPoints();
+	TArray<AActor*>& PatrolPoints = PatrolRoute->GetPatrolPoints();
 
 	if (PatrolPoints.Num() == 0)
 	{
