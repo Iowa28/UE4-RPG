@@ -58,6 +58,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
 	UAnimMontage* DamageAnimation;
 
+	UPROPERTY()
+	UAnimInstance* AnimInstance = nullptr;
+
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void EnableWeaponCollision() const;
 
@@ -104,9 +107,6 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	UPROPERTY()
-	UAnimInstance* AnimInstance = nullptr;
-
 	UPROPERTY()
 	UAttackComponent* AttackComponent = nullptr;
 

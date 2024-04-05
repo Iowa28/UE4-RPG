@@ -33,6 +33,7 @@ void ABaseAIController::PerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (BlackboardComponent && UActorUtils::IsPlayer(Actor))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("PerceptionUpdated"));
 		BlackboardComponent->SetValueAsObject(PlayerKey, Actor);
 	}
 }
