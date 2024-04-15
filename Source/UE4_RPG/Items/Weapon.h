@@ -22,7 +22,7 @@ public:
 	float StaminaCost = 15.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	FName TriggerTag = FName("Character");
+	bool ControlledByPlayer = true;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	UStaticMeshComponent* WeaponMesh = nullptr;

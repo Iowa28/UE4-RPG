@@ -31,7 +31,7 @@ void ABaseAIController::BeginPlay()
 
 void ABaseAIController::PerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (BlackboardComponent && UActorUtils::IsPlayer(Actor))
+	if (BlackboardComponent && UActorUtils::IsPlayer(Actor) && !UActorUtils::IsDead(Actor))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PerceptionUpdated"));
 		BlackboardComponent->SetValueAsObject(PlayerKey, Actor);

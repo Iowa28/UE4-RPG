@@ -10,6 +10,11 @@ UAttackComponent::UAttackComponent()
 
 void UAttackComponent::PerformCombo()
 {
+	if (!ComboAnimation1 || !ComboAnimation2 || !ComboAnimation3)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No animations!"));
+	}
+	
 	if (ComboIndex == 0)
 	{
 		AnimInstance->Montage_Play(ComboAnimation1, 1.f);
