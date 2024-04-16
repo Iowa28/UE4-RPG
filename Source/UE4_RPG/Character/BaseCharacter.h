@@ -92,6 +92,8 @@ public:
 	void Roll();
 
 	void Attack();
+
+	void Target();
 	
 	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
@@ -121,6 +123,9 @@ private:
 
 	UPROPERTY()
 	AWeapon* Weapon;
+
+	UPROPERTY()
+	AActor* TargetedActor;
 
 	bool bAttacking;
 
