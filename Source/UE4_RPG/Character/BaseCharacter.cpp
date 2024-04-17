@@ -2,7 +2,6 @@
 
 #include "BaseCharacter.h"
 #include "AttackComponent.h"
-#include "DrawDebugHelpers.h"
 #include "StatsComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -10,7 +9,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UE4_RPG/Items/Weapon.h"
 
@@ -109,7 +107,7 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 		StatsComponent->RegenerateStamina();
 	}
 
-	if (TargetedActor)
+	if (TargetedActor && Controller)
 	{
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(
 			GetActorLocation(),
@@ -149,11 +147,11 @@ void ABaseCharacter::LoadComponents()
 
 void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 {
-	GetCharacterMovement()->Activate();
 	bInteracting = false;
 
 	if (!Interrupted)
 	{
+		GetCharacterMovement()->Activate();
 		bAttacking = false;
 	}
 }
@@ -170,9 +168,7 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 	
 	if (IsCharacterDead())
 	{
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-		DetachFromControllerPendingDestroy();
+		OnDeath();
 	}
 	else
 	{
@@ -180,6 +176,14 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 	}
 	
 	return Damage;
+}
+
+void ABaseCharacter::OnDeath()
+{
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	DetachFromControllerPendingDestroy();
 }
 
 void ABaseCharacter::Roll()
@@ -223,20 +227,18 @@ void ABaseCharacter::Target()
 		TargetedActor->Tags.Remove(FName("Targeted"));
 		TargetedActor = nullptr;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
+		bUseControllerRotationYaw = false;
 		return;
 	}
-
-	FVector Location = GetActorLocation();
-	constexpr float Radius = 500;
 
 	FHitResult HitResult;
 	bool bHit = GetWorld()->SweepSingleByChannel(
 		HitResult,
-		Location,
-		Location,
+		GetActorLocation(),
+		GetActorLocation(),
 		FQuat::Identity,
 		ECC_GameTraceChannel1,
-		FCollisionShape::MakeSphere(Radius)
+		FCollisionShape::MakeSphere(500)
 	);
 
 	if (bHit)
@@ -244,9 +246,8 @@ void ABaseCharacter::Target()
 		TargetedActor = HitResult.Actor.Get();
 		TargetedActor->Tags.Add(FName("Targeted"));
 		GetCharacterMovement()->bOrientRotationToMovement = false;
+		bUseControllerRotationYaw = true;
 	}
-
-	DrawDebugSphere(GetWorld(), Location, Radius, 16, FColor::Green, true, 5);
 }
 
 #pragma region Stats

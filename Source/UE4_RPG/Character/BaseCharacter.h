@@ -57,6 +57,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
 	UAnimMontage* DamageAnimation;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+	AActor* TargetedActor;
 
 	UPROPERTY()
 	UAnimInstance* AnimInstance = nullptr;
@@ -85,6 +88,8 @@ public:
 	UFUNCTION()
 	void OnMontageEnded(UAnimMontage* Montage, bool Interrupted);
 
+	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 	void Walk();
 
 	void Run();
@@ -94,8 +99,6 @@ public:
 	void Attack();
 
 	void Target();
-	
-	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	void MoveForward(float Value);
@@ -124,14 +127,13 @@ private:
 	UPROPERTY()
 	AWeapon* Weapon;
 
-	UPROPERTY()
-	AActor* TargetedActor;
-
 	bool bAttacking;
 
 	bool bCanDoCombo;
 
 	void LoadComponents();
+
+	void OnDeath();
 
 	bool IsWalking();
 	
