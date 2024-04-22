@@ -152,10 +152,7 @@ void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 	{
 		GetCharacterMovement()->Activate();
 		bAttacking = false;
-	}
-	else
-	{
-		DisableWeaponCollision();
+		AttackComponent->ResetComboIndex();
 	}
 }
 
@@ -168,6 +165,7 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 
 	GetCharacterMovement()->Deactivate();
 	StatsComponent->ApplyDamage(Damage);
+	DisableWeaponCollision();
 	
 	if (IsCharacterDead())
 	{
@@ -183,7 +181,6 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 
 void ABaseCharacter::OnDeath()
 {
-	DisableWeaponCollision();
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);

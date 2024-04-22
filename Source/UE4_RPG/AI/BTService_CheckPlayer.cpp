@@ -2,6 +2,7 @@
 
 
 #include "BTService_CheckPlayer.h"
+#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "UE4_RPG/ActorUtils.h"
 
@@ -12,9 +13,9 @@ void UBTService_CheckPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	
 	UObject* Player = BlackboardComp->GetValueAsObject(PlayerKey.SelectedKeyName);
-	// AActor* PlayerActor = Cast<AActor>(Player);
 	if (UActorUtils::IsDead(Player))
 	{
 		BlackboardComp->ClearValue(PlayerKey.SelectedKeyName);
+		OwnerComp.GetAIOwner()->ClearFocus(EAIFocusPriority::Gameplay);
 	}
 }

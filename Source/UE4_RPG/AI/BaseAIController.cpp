@@ -34,5 +34,6 @@ void ABaseAIController::PerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 	if (BlackboardComponent && UActorUtils::IsPlayer(Actor) && !UActorUtils::IsDead(Actor))
 	{
 		BlackboardComponent->SetValueAsObject(PlayerKey, Actor);
+		SetFocus(Actor);
 	}
 }
