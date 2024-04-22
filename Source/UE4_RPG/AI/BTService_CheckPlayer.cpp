@@ -12,13 +12,9 @@ void UBTService_CheckPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	
 	UObject* Player = BlackboardComp->GetValueAsObject(PlayerKey.SelectedKeyName);
-	AActor* PlayerActor = Cast<AActor>(Player);
+	// AActor* PlayerActor = Cast<AActor>(Player);
 	if (UActorUtils::IsDead(Player))
 	{
 		BlackboardComp->ClearValue(PlayerKey.SelectedKeyName);
-	}
-	else if (PlayerActor)
-	{
-		BlackboardComp->SetValueAsVector("PlayerVector", PlayerActor->GetActorLocation());
 	}
 }

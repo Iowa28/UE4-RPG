@@ -68,7 +68,7 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABaseCharacter::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABaseCharacter::Walk);
 
-	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &ABaseCharacter::Target);
+	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &ABaseCharacter::LockTarget);
 }
 
 void ABaseCharacter::BeginPlay()
@@ -110,7 +110,12 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 
 	if (TargetedActor && Controller)
 	{
-		LockTarget();
+		LookAtTarget();
+
+		if (TargetedActor->IsCharacterDead())
+		{
+			ReleaseTarget();
+		}
 	}
 }
 
@@ -176,23 +181,6 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 	return Damage;
 }
 
-void ABaseCharacter::LockTarget()
-{
-	FRotator LockRotation = UKismetMathLibrary::FindLookAtRotation(
-		GetActorLocation(),
-		TargetedActor->GetActorLocation()
-	);
-
-	FRotator ControlRotation = Controller->GetControlRotation();
-	ControlRotation.Yaw = LockRotation.Yaw;
-	FQuat NewRotation = FQuat::Slerp(
-		Controller->GetControlRotation().Quaternion(),
-		ControlRotation.Quaternion(),
-		GetWorld()->GetDeltaSeconds() * LockRotationSpeed
-	);
-	Controller->SetControlRotation(NewRotation.Rotator());
-}
-
 void ABaseCharacter::OnDeath()
 {
 	DisableWeaponCollision();
@@ -200,6 +188,8 @@ void ABaseCharacter::OnDeath()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	DetachFromControllerPendingDestroy();
+
+	UpdateTargetIcon(false);
 }
 
 void ABaseCharacter::Roll()
@@ -236,14 +226,12 @@ void ABaseCharacter::Attack()
 	}
 }
 
-void ABaseCharacter::Target()
+#pragma region Target
+void ABaseCharacter::LockTarget()
 {
 	if (TargetedActor)
 	{
-		TargetedActor->Tags.Remove(FName("Targeted"));
-		TargetedActor = nullptr;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		bUseControllerRotationYaw = false;
+		ReleaseTarget();
 		return;
 	}
 
@@ -257,14 +245,45 @@ void ABaseCharacter::Target()
 		FCollisionShape::MakeSphere(500)
 	);
 
-	if (bHit)
+	if (!bHit)
 	{
-		TargetedActor = HitResult.Actor.Get();
-		TargetedActor->Tags.Add(FName("Targeted"));
+		return;
+	}
+
+	TargetedActor = Cast<ABaseCharacter>(HitResult.Actor.Get());
+	if (TargetedActor)
+	{
+		TargetedActor->UpdateTargetIcon(true);
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		bUseControllerRotationYaw = true;
 	}
 }
+
+void ABaseCharacter::ReleaseTarget()
+{
+	TargetedActor->UpdateTargetIcon(false);
+	TargetedActor = nullptr;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
+}
+
+void ABaseCharacter::LookAtTarget()
+{
+	FRotator LockRotation = UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(),
+		TargetedActor->GetActorLocation()
+	);
+
+	FRotator ControlRotation = Controller->GetControlRotation();
+	ControlRotation.Yaw = LockRotation.Yaw;
+	FQuat NewRotation = FQuat::Slerp(
+		Controller->GetControlRotation().Quaternion(),
+		ControlRotation.Quaternion(),
+		GetWorld()->GetDeltaSeconds() * LockRotationSpeed
+	);
+	Controller->SetControlRotation(NewRotation.Rotator());
+}
+#pragma endregion 
 
 #pragma region Stats
 bool ABaseCharacter::IsCharacterDead() const

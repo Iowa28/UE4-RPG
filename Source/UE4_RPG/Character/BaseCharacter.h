@@ -62,7 +62,7 @@ public:
 	UAnimMontage* DamageAnimation;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
-	AActor* TargetedActor;
+	ABaseCharacter* TargetedActor;
 
 	UPROPERTY()
 	UAnimInstance* AnimInstance = nullptr;
@@ -88,6 +88,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	float GetStaminaPercent() const;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+	void UpdateTargetIcon(bool bShow);
+
 	UFUNCTION()
 	void OnMontageEnded(UAnimMontage* Montage, bool Interrupted);
 
@@ -100,8 +103,9 @@ public:
 	void Roll();
 
 	void Attack();
+	void ReleaseTarget();
 
-	void Target();
+	void LockTarget();
 
 protected:
 	void MoveForward(float Value);
@@ -136,7 +140,7 @@ private:
 
 	void LoadComponents();
 
-	void LockTarget();
+	void LookAtTarget();
 
 	void OnDeath();
 
