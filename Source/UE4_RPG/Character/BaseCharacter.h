@@ -47,6 +47,9 @@ public:
 	float RollStaminaCost = 15.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	float LockRotationSpeed = 10.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	TSubclassOf<AWeapon> WeaponBlueprint;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Gameplay")
@@ -132,6 +135,8 @@ private:
 	bool bCanDoCombo;
 
 	void LoadComponents();
+
+	void LockTarget();
 
 	void OnDeath();
 
