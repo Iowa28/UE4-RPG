@@ -117,6 +117,8 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 			ReleaseTarget();
 		}
 	}
+
+	bRolling = false;
 }
 
 void ABaseCharacter::LoadComponents()
@@ -152,7 +154,7 @@ void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 	{
 		GetCharacterMovement()->Activate();
 		bAttacking = false;
-		AttackComponent->ResetComboIndex();
+		// AttackComponent->ResetComboIndex();
 	}
 }
 
@@ -196,8 +198,9 @@ void ABaseCharacter::Roll()
 		return;
 	}
 	
-	bInteracting = true;
-	AnimInstance->Montage_Play(RollAnimation, 1.f);
+	// bInteracting = true;
+	bRolling = true;
+	// AnimInstance->Montage_Play(RollAnimation, 1.f);
 	StatsComponent->DecreaseStamina(RollStaminaCost);
 	DisableWeaponCollision();
 

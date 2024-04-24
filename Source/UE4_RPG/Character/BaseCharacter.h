@@ -54,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Gameplay")
 	bool bInteracting;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+	bool bRolling;
 
 	UPROPERTY(EditAnywhere, Category = "Animation Clips")
 	UAnimMontage* RollAnimation;
