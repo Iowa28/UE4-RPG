@@ -247,6 +247,7 @@ void ABaseCharacter::LockTarget()
 
 	if (!bHit)
 	{
+		LookForward();
 		return;
 	}
 
@@ -282,6 +283,25 @@ void ABaseCharacter::LookAtTarget()
 		GetWorld()->GetDeltaSeconds() * LockRotationSpeed
 	);
 	Controller->SetControlRotation(NewRotation.Rotator());
+}
+
+void ABaseCharacter::LookForward()
+{
+	FRotator InitialRotation = Controller->GetControlRotation();
+	constexpr  int32 Count = 12;
+
+	for (int i = 0; i < Count; ++i)
+	{
+		float Slerp = (i + 1) / Count;
+		FRotator ControlRotation = Controller->GetControlRotation();
+		ControlRotation.Yaw = GetActorForwardVector().Rotation().Yaw;
+		FQuat NewRotation = FQuat::Slerp(
+			InitialRotation.Quaternion(),
+			ControlRotation.Quaternion(),
+			Slerp
+		);
+		Controller->SetControlRotation(NewRotation.Rotator());
+	}
 }
 #pragma endregion 
 

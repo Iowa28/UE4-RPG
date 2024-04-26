@@ -106,9 +106,12 @@ public:
 	void Roll();
 
 	void Attack();
+	
 	void ReleaseTarget();
 
 	void LockTarget();
+	
+	// void LockTarget();
 
 protected:
 	void MoveForward(float Value);
@@ -144,6 +147,8 @@ private:
 	void LoadComponents();
 
 	void LookAtTarget();
+
+	void LookForward();
 
 	void OnDeath();
 
