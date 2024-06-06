@@ -32,7 +32,7 @@ void AWeapon::OnHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPr
 	}
 }
 
-void AWeapon::EnableCollision()
+void AWeapon::EnableCollision() const
 {
 	if (BoxCollision)
 	{
@@ -40,10 +40,15 @@ void AWeapon::EnableCollision()
 	}
 }
 
-void AWeapon::DisableCollision()
+void AWeapon::DisableCollision() const
 {
 	if (BoxCollision)
 	{
 		BoxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+}
+
+void AWeapon::HideWeapon() const
+{
+	WeaponMesh->SetVisibility(false);
 }

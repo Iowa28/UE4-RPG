@@ -16,8 +16,13 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void WinGame();
+
 private:
-	TSubclassOf<UUserWidget> WidgetClass;
+	TSubclassOf<UUserWidget> HUDWidgetClass;
+
+	TSubclassOf<UUserWidget> WinWidgetClass;
 };
 
 

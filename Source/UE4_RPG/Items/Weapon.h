@@ -33,7 +33,9 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void EnableCollision();
+	void EnableCollision() const;
 	
-	void DisableCollision();
+	void DisableCollision() const;
+
+	void HideWeapon() const;
 };

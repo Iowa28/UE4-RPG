@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UE4_RPG/Items/Weapon.h"
 
@@ -177,6 +178,11 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 	{
 		AnimInstance->Montage_Play(DamageAnimation, 1.f);
 	}
+
+	if (FireSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	}
 	
 	return Damage;
 }
@@ -319,6 +325,17 @@ float ABaseCharacter::GetHealthPercent() const
 float ABaseCharacter::GetStaminaPercent() const
 {
 	return StatsComponent ? StatsComponent->GetStaminaPercent() : 0;
+}
+
+void ABaseCharacter::OnWin()
+{
+	DetachFromControllerPendingDestroy();
+
+	if (WinAnimation)
+	{
+		Weapon->HideWeapon();
+		AnimInstance->Montage_Play(WinAnimation, 1.f);
+	}
 }
 #pragma endregion Stats
 

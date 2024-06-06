@@ -63,9 +63,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
 	UAnimMontage* DamageAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation Clips")
+	UAnimMontage* WinAnimation;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
 	ABaseCharacter* TargetedActor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	USoundBase* FireSound;
 
 	UPROPERTY()
 	UAnimInstance* AnimInstance = nullptr;
@@ -90,6 +96,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	float GetStaminaPercent() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void OnWin();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
 	void UpdateTargetIcon(bool bShow);
