@@ -28,17 +28,17 @@ public:
 
 	void ApplyDamage(const float DamageAmount);
 
-	bool IsDead();
+	bool IsDead() const;
 
 	void RegenerateStamina();
 
 	void DecreaseStamina(const float StaminaAmount);
 
-	bool HasStamina();
+	bool HasStamina() const;
 
-	float GetHealthPercent();
+	float GetHealthPercent() const;
 	
-	float GetStaminaPercent();
+	float GetStaminaPercent() const;
 
 protected:
 	virtual void BeginPlay() override;

@@ -119,8 +119,6 @@ public:
 	void ReleaseTarget();
 
 	void LockTarget();
-	
-	// void LockTarget();
 
 protected:
 	void MoveForward(float Value);

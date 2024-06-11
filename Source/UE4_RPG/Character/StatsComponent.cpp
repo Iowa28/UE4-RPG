@@ -21,14 +21,14 @@ void UStatsComponent::ApplyDamage(const float DamageAmount)
 	Health = FMath::Max<float>(Health - DamageAmount, 0);
 }
 
-bool UStatsComponent::IsDead()
+bool UStatsComponent::IsDead() const
 {
 	return Health <= 0;
 }
 
 void UStatsComponent::RegenerateStamina()
 {
-	float DeltaSeconds = GetWorld()->GetDeltaSeconds();
+	const float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 
 	if (StaminaRegenerationTimer > 0)
 	{
@@ -46,17 +46,17 @@ void UStatsComponent::DecreaseStamina(const float StaminaAmount)
 	StaminaRegenerationTimer = StaminaRegenerationDelay;
 }
 
-bool UStatsComponent::HasStamina()
+bool UStatsComponent::HasStamina() const
 {
 	return Stamina > .5f;
 }
 
-float UStatsComponent::GetHealthPercent()
+float UStatsComponent::GetHealthPercent() const
 {
 	return Health / MaxHealth;
 }
 
-float UStatsComponent::GetStaminaPercent()
+float UStatsComponent::GetStaminaPercent() const
 {
 	return Stamina / MaxStamina;
 }

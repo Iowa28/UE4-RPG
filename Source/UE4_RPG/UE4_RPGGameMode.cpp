@@ -2,7 +2,6 @@
 
 #include "UE4_RPGGameMode.h"
 #include "Blueprint/UserWidget.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -20,10 +19,16 @@ AUE4_RPGGameMode::AUE4_RPGGameMode()
 		HUDWidgetClass = PlayerHUDClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerWinClass(TEXT("/Game/UI/WBP_Win"));
-	if (PlayerWinClass.Class)
+	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerWonClass(TEXT("/Game/UI/WBP_Won"));
+	if (PlayerWonClass.Class)
 	{
-		WinWidgetClass = PlayerWinClass.Class;
+		WonWidgetClass = PlayerWonClass.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerDiedClass(TEXT("/Game/UI/WBP_Died"));
+	if (PlayerDiedClass.Class)
+	{
+		DiedWidgetClass = PlayerDiedClass.Class;
 	}
 }
 
@@ -43,9 +48,22 @@ void AUE4_RPGGameMode::BeginPlay()
 	}
 }
 
-void AUE4_RPGGameMode::WinGame()
+void AUE4_RPGGameMode::OnPlayerWon() const
 {
-	UUserWidget* Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), WinWidgetClass));
+	UUserWidget* Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), WonWidgetClass));
+	if (Widget)
+	{
+		Widget->AddToViewport();
+	}
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(true);
+	PlayerController->SetInputMode(FInputModeUIOnly());
+}
+
+void AUE4_RPGGameMode::OnPlayerDied() const
+{
+	UUserWidget* Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), DiedWidgetClass));
 	if (Widget)
 	{
 		Widget->AddToViewport();

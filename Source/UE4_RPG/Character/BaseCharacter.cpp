@@ -11,6 +11,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UE4_RPG/ActorUtils.h"
+#include "UE4_RPG/UE4_RPGGameMode.h"
 #include "UE4_RPG/Items/Weapon.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -189,12 +191,23 @@ float ABaseCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, 
 
 void ABaseCharacter::OnDeath()
 {
+	if (UActorUtils::IsPlayer(this))
+	{
+		const AUE4_RPGGameMode* GameMode = Cast<AUE4_RPGGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (GameMode)
+		{
+			GameMode->OnPlayerDied();
+		}
+	}
+	else
+	{
+		UpdateTargetIcon(false);
+	}
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	DetachFromControllerPendingDestroy();
-
-	UpdateTargetIcon(false);
 }
 
 void ABaseCharacter::Roll()

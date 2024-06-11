@@ -17,12 +17,16 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	void WinGame();
+	void OnPlayerWon() const;
+
+	void OnPlayerDied() const;
 
 private:
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 
-	TSubclassOf<UUserWidget> WinWidgetClass;
+	TSubclassOf<UUserWidget> WonWidgetClass;
+
+	TSubclassOf<UUserWidget> DiedWidgetClass;
 };
 
 
