@@ -158,6 +158,9 @@ void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 	{
 		GetCharacterMovement()->Activate();
 		bAttacking = false;
+	}
+	if (!Interrupted && AttackComponent)
+	{
 		AttackComponent->ResetComboIndex();
 	}
 }
