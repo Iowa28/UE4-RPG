@@ -50,8 +50,6 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
-	// UE_LOG(LogTemp, Warning, TEXT("HEY"));
-	// UE_LOG(LogTemp, Warning, TEXT("delta: %f"), GetWorld()->GetDeltaSeconds());
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABaseCharacter::MoveRight);
@@ -85,7 +83,11 @@ void ABaseCharacter::BeginPlay()
 	if (WeaponBlueprint)
 	{
 		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative,true),TEXT("WeaponSocket"));
+		Weapon->AttachToComponent(
+			GetMesh(),
+			FAttachmentTransformRules(EAttachmentRule::KeepRelative,true),
+			TEXT("WeaponSocket")
+		);
 	}
 }
 
@@ -114,7 +116,6 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 	if (TargetedActor && Controller)
 	{
 		LookAtTarget();
-
 		if (TargetedActor->IsCharacterDead())
 		{
 			ReleaseTarget();
@@ -157,7 +158,7 @@ void ABaseCharacter::OnMontageEnded(UAnimMontage* Montage, bool Interrupted)
 	{
 		GetCharacterMovement()->Activate();
 		bAttacking = false;
-		// AttackComponent->ResetComboIndex();
+		AttackComponent->ResetComboIndex();
 	}
 }
 
@@ -243,6 +244,17 @@ void ABaseCharacter::Attack()
 	}
 }
 
+void ABaseCharacter::OnWin()
+{
+	DetachFromControllerPendingDestroy();
+
+	if (WinAnimation)
+	{
+		Weapon->HideWeapon();
+		AnimInstance->Montage_Play(WinAnimation, 1.f);
+	}
+}
+
 #pragma region Target
 void ABaseCharacter::LockTarget()
 {
@@ -285,7 +297,7 @@ void ABaseCharacter::ReleaseTarget()
 	bUseControllerRotationYaw = false;
 }
 
-void ABaseCharacter::LookAtTarget()
+void ABaseCharacter::LookAtTarget() const
 {
 	FRotator LockRotation = UKismetMathLibrary::FindLookAtRotation(
 		GetActorLocation(),
@@ -338,16 +350,6 @@ float ABaseCharacter::GetStaminaPercent() const
 	return StatsComponent ? StatsComponent->GetStaminaPercent() : 0;
 }
 
-void ABaseCharacter::OnWin()
-{
-	DetachFromControllerPendingDestroy();
-
-	if (WinAnimation)
-	{
-		Weapon->HideWeapon();
-		AnimInstance->Montage_Play(WinAnimation, 1.f);
-	}
-}
 #pragma endregion Stats
 
 #pragma region Collision
@@ -395,13 +397,13 @@ void ABaseCharacter::Run()
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 }
 
-bool ABaseCharacter::IsWalking()
+bool ABaseCharacter::IsWalking() const
 {
-	float Speed = GetVelocity().Size();
+	const float Speed = GetVelocity().Size();
 	return Speed > 0 && Speed < RunSpeed;
 }
 
-bool ABaseCharacter::IsRunning()
+bool ABaseCharacter::IsRunning() const
 {
 	return FMath::IsNearlyEqual(GetVelocity().Size(), RunSpeed, 2.f);
 }

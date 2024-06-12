@@ -153,14 +153,14 @@ private:
 
 	void LoadComponents();
 
-	void LookAtTarget();
+	void LookAtTarget() const;
 
 	void LookForward();
 
 	void OnDeath();
 
-	bool IsWalking();
+	bool IsWalking() const;
 	
-	bool IsRunning();
+	bool IsRunning() const;
 };
 
