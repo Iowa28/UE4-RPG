@@ -217,9 +217,7 @@ void ABaseCharacter::Roll()
 		return;
 	}
 	
-	// bInteracting = true;
 	bRolling = true;
-	// AnimInstance->Montage_Play(RollAnimation, 1.f);
 	StatsComponent->DecreaseStamina(RollStaminaCost);
 	DisableWeaponCollision();
 
